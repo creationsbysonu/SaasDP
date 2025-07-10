@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Organization Registration</title>
+  <script src="https://unpkg.com/framer-motion/dist/framer-motion.umd.js"></script>
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+  <style>
+    body {
+      background: linear-gradient(to right, #1e3a8a, #ffffff);
+    }
+  </style>
+</head>
+<body class="min-h-screen flex flex-col">
+  <!-- Navbar -->
+  <header class="bg-white shadow-md py-4 px-8 flex justify-between items-center">
+    <h1 class="text-2xl font-bold text-blue-800">SaaS Register</h1>
+    <nav>
+      <ul class="flex space-x-6 text-blue-800 font-medium">
+        <li><a href="#" class="hover:underline">Home</a></li>
+        <li><a href="#" class="hover:underline">Features</a></li>
+        <li><a href="#" class="hover:underline">Pricing</a></li>
+        <li><a href="#" class="hover:underline">Contact</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <!-- Registration Form -->
+  <main class="flex-grow flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
+    <div id="form-container" class="max-w-md w-full space-y-8 bg-white bg-opacity-90 p-10 rounded-xl shadow-lg">
+      <div class="text-center">
+        <h2 class="text-3xl font-extrabold text-blue-900">Register Your Organization</h2>
+        <p class="mt-2 text-sm text-blue-700">Fill in the details below to get started.</p>
+      </div>
+      <form class="mt-8 space-y-6" action="/organization" method="post">
+        <div class="rounded-md shadow-sm -space-y-px">
+          <div class="mb-4">
+            <label for="organizationName" class="block text-sm font-medium text-blue-900">Organization Name</label>
+            <input id="organizationName" name="organizationName" type="text" required class="appearance-none rounded-md relative block w-full px-3 py-2 border border-blue-300 placeholder-blue-400 text-blue-900 focus:outline-none focus:ring-2 focus:ring-blue-600 focus:border-transparent" placeholder="e.g., Tech Solutions Pvt. Ltd." />
+          </div>
+          <div class="mb-4">
+            <label for="organizationAddress" class="block text-sm font-medium text-blue-900">Address</label>
+            <input id="organizationAddress" name="organizationAddress" type="text" required class="appearance-none rounded-md relative block w-full px-3 py-2 border border-blue-300 placeholder-blue-400 text-blue-900 focus:outline-none focus:ring-2 focus:ring-blue-600 focus:border-transparent" placeholder="Kathmandu, Nepal" />
+          </div>
+          <div class="mb-4">
+            <label for="organizationPhoneNumber" class="block text-sm font-medium text-blue-900">Phone Number</label>
+            <input id="organizationPhoneNumber" name="organizationPhoneNumber" type="tel" required class="appearance-none rounded-md relative block w-full px-3 py-2 border border-blue-300 placeholder-blue-400 text-blue-900 focus:outline-none focus:ring-2 focus:ring-blue-600 focus:border-transparent" placeholder="+977-98XXXXXXXX" />
+          </div>
+          <div class="mb-4">
+            <label for="organizationEmail" class="block text-sm font-medium text-blue-900">Email</label>
+            <input id="organizationEmail" name="organizationEmail" type="email" required class="appearance-none rounded-md relative block w-full px-3 py-2 border border-blue-300 placeholder-blue-400 text-blue-900 focus:outline-none focus:ring-2 focus:ring-blue-600 focus:border-transparent" placeholder="example@organization.com" />
+          </div>
+          <div class="mb-4">
+            <label for="organizationVatNumber" class="block text-sm font-medium text-blue-900">VAT Number</label>
+            <input id="organizationVatNumber" name="organizationVatNumber" type="text" required class="appearance-none rounded-md relative block w-full px-3 py-2 border border-blue-300 placeholder-blue-400 text-blue-900 focus:outline-none focus:ring-2 focus:ring-blue-600 focus:border-transparent" placeholder="1234567890" />
+          </div>
+          <div>
+            <label for="organizationPanNumber" class="block text-sm font-medium text-blue-900">PAN Number</label>
+            <input id="organizationPanNumber" name="organizationPanNumber" type="text" required class="appearance-none rounded-md relative block w-full px-3 py-2 border border-blue-300 placeholder-blue-400 text-blue-900 focus:outline-none focus:ring-2 focus:ring-blue-600 focus:border-transparent" placeholder="987654321" />
+          </div>
+        </div>
+        <div>
+          <button type="submit" class="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-blue-700 hover:bg-blue-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-all">
+            Register Organization
+          </button>
+        </div>
+      </form>
+    </div>
+  </main>
+
+  <script>
+    const { motion } = window['framer-motion'];
+    const formContainer = document.getElementById('form-container');
+    const containerAnimation = motion(formContainer, {
+      initial: { opacity: 0, y: 50 },
+      animate: { opacity: 1, y: 0 },
+      transition: { duration: 1, ease: 'easeOut' },
+    });
+  </script>
+</body>
+</html>

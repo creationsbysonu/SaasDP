@@ -16,6 +16,10 @@ const sequelize = new Sequelize(dbConfig.DB, dbConfig.USER, dbConfig.PASSWORD, {
   },
 });
 
+
+// //alternative way of connecting database using sequelize
+// const sequelize = new Sequelize('mysql://root@localhost:8081/saasdp')
+
 sequelize
   .authenticate()
   .then(() => {
