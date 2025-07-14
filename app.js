@@ -22,6 +22,10 @@ app.use(cookieParser());
 app.use(express.json())
 app.use(express.urlencoded({extended:true}))
 
+
+//for using the contents assests folder inside the public folder
+app.use(express.static('public/'))
+
 passport.serializeUser(function(user,cb){
     cb(null,user) //cb(error,success)---->error
 })

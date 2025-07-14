@@ -5,7 +5,7 @@ exports.renderOrganizationForm = (req, res) => {
     res.render("addOrganization");
 };
 
-
+//generating random number for the refrence in table
 const generateRandomNumber = ()=>{
     return Math.floor(1000+ Math.random() *9000)
 }
@@ -30,14 +30,15 @@ exports.createOrganization = async (req, res, next) => {
     try {
         // Create table if it doesn't exist
         
-
+        //create users_org table
         await sequelize.query(`
             CREATE TABLE IF NOT EXISTS users_org(
                 id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
                 userId INT REFERENCES users(id) ON DELETE CASCADE ON UPDATE CASCADE, organizationNumber VARCHAR(255)
             )
         `, { type: QueryTypes.CREATE });
-
+        
+        //create organization table
         await sequelize.query(`
             CREATE TABLE IF NOT EXISTS organization_${organizationNumber} (
                 id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
@@ -50,7 +51,7 @@ exports.createOrganization = async (req, res, next) => {
             )
         `, { type: QueryTypes.CREATE });
 
-        // Insert data
+        // Insert data into organization table
         await sequelize.query(`
             INSERT INTO organization_${organizationNumber} 
             (name, address, phoneNumber, email, vatNumber, panNumber)
@@ -66,6 +67,8 @@ exports.createOrganization = async (req, res, next) => {
                 organizationPanNumber
             ]
         });
+
+        //insert data into users_org table
         await sequelize.query(`
             INSERT INTO users_org
             (userId,organizationNumber)
@@ -89,21 +92,81 @@ exports.createOrganization = async (req, res, next) => {
     }
 };
 
-exports.createForumTable = async (req, res) => {
+exports.createQuestionsTable = async (req, res,next) => {
     const organizationNumber = req.organizationNumber
 
     try {
+        //create questions table
         await sequelize.query(`
-                CREATE TABLE forum_${organizationNumber}(
+                CREATE TABLE questions_${organizationNumber}(
                     id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
-                    questions VARCHAR(255), answer VARCHAR(255)
+                    title VARCHAR(255), description TEXT, userid INT NOT NULL REFERENCES users(id) ON UPDATE CASCADE ON DELETE CASCADE, created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP, updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
                 )
             `, { type: QueryTypes.CREATE })
-        res.send("Organization created successfully!")
+        next()
     } catch (error) {
-        console.error("Error creating organization:", error);
-        res.status(500).send("Something went wrong!");
+        console.error("Error creating questions table:", error);
+        res.status(500).send("Something went wrong (in questions table creation)");
     }
 
     
 }
+
+
+exports.createAnswersTable = async(req,res)=>{
+
+    const organizationNumber = req.organizationNumber
+
+    try {
+        await sequelize.query(`
+            CREATE TABLE answers_${organizationNumber}(
+            id INT NOT NULL AUTO_INCREMENT PRIMARY KEY, userId INT NOT NULL REFERENCES users(id) ON UPDATE CASCADE ON DELETE CASCADE, answer TEXT, created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP, updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP, questionId INT NOT NULL)`, {
+                type: QueryTypes.CREATE})
+                res.redirect('/dashboard');
+    } catch (error) {
+        console.error("Error creating the answer table:",error)
+        res.status(500).send("Something went wrong(in answer table creation)")
+    }
+    res.redirect("/dashboard")
+}
+
+
+//dashboard
+exports.renderDashboard = (req,res)=>{
+    res.render("dashboard/index")
+}
+
+exports.renderForumPage = async(req,res)=>{
+    const organizationNumber = req.user[0].currentOrgNumber
+    const questions = await sequelize.query(`SELECT * FROM questions_${organizationNumber}`,{
+        type: QueryTypes.SELECT
+    })
+    res.render("dashboard/forum", {questions:questions})
+}
+
+exports.renderQuestionPage = (req,res)=>{
+
+    res.render("dashboard/askQuestion")
+}
+
+exports.createQuestion = async(req,res)=>{
+    const organizationNumber = req.user[0].currentOrgNumber
+    const {title,description} = req.body
+    console.log(organizationNumber) //to check which organization is currently running
+    const userId = req.userId
+    if(!title || !description){
+        console.log("please add the title or description")
+    }
+
+//insert data into table
+await sequelize.query(`INSERT INTO questions_${organizationNumber} (title,description,userId) VALUES (?,?,?)`,{
+    type: QueryTypes.INSERT,
+    replacements : [title,description,userId]
+})
+res.redirect('/forum')
+
+
+}
+
+
+
